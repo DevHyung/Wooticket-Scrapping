@@ -37,7 +37,10 @@ if __name__=="__main__":
     headList = []   #맨위
     titleList = []  #그아래
     buyList = []    #매입
+    buyPerList = []
     sellList = []   #판매
+    sellPerList = []
+    spreadList = []
     now = time.localtime()
     nowDate = time.strftime("%x")
     nowTime = "%04d-%02d-%02d %02d:%02d:%02d" % \
@@ -45,7 +48,8 @@ if __name__=="__main__":
 
     header1 = ['일자', '긁어온 시간', '']
     header2 = [' ', ' ', ' ']
-    datas = [nowDate,nowTime,' ']
+    datas = [nowDate, nowTime, ' ']
+
 
     #===    CODE
     #파싱
@@ -60,15 +64,29 @@ if __name__=="__main__":
             titleList.append(name.split(' ', maxsplit=1)[0])
         finally:
             buy = tr.find_all('td')[2].find('font').get_text().strip()
+            buyPer = tr.find_all('td')[2].get_text().strip().split('(')[1].split(')')[0]
             buyList.append(buy)
-            sell = tr.find_all('td')[3].find('font').get_text().strip()
+            buyPerList.append(buyPer)
 
+            sell = tr.find_all('td')[3].find('font').get_text().strip()
+            sellPer = tr.find_all('td')[3].get_text().strip().split('(')[1].split(')')[0]
+            sellPerList.append(sellPer)
+            sellList.append(sell)
+            spreadList.append(int(sell.replace(',',''))-int(buy.replace(',','')))
     # 엑셀 저장 부분
     if os.path.isfile(FILENAME): # 파일있는 경우
         wb = load_workbook(filename=FILENAME)
         sheet1 = wb.get_sheet_by_name(wb.get_sheet_names()[0])
         nextRow = sheet1.max_row + 1
-        sheet1.append(datas + buyList)
+        sheet1.append(datas + buyList + header2 + sellList)
+
+        sheet2 = wb.get_sheet_by_name(wb.get_sheet_names()[1])
+        nextRow = sheet2.max_row + 1
+        sheet2.append(datas + buyPerList + header2 + sellPerList)
+
+        sheet3 = wb.get_sheet_by_name(wb.get_sheet_names()[2])
+        nextRow = sheet3.max_row + 1
+        sheet3.append(datas + spreadList)
         wb.save(FILENAME)
     else: # 파일 없는 경우
         # 엑셀파일 초기설정
@@ -91,14 +109,22 @@ if __name__=="__main__":
         sheet3.column_dimensions['B'].width = 20
         sheet3.column_dimensions['C'].width = 2
         # 저장
-        sheet1.append(header1 + remove_dup_data_at_list(headList))
-        sheet1.append(header2 + titleList)
-        sheet1.append(datas + buyList)
+        sheet1.append(header1 + remove_dup_data_at_list(headList) + header2 + remove_dup_data_at_list(headList))
+        sheet1.append(header2 + titleList + header2 + titleList)
+        sheet1.cell(row=3, column=len(header2)+1).value = '매입가(원)'
+        sheet1.cell(row=3, column=len(remove_dup_data_at_list(headList)) + 7).value = '판매가(원)' # 6+1
+        sheet1.append(datas + buyList + header2 + sellList)
 
-        sheet2.append(header1 + remove_dup_data_at_list(headList))
-        sheet2.append(header2 + titleList)
+        sheet2.append(header1 + remove_dup_data_at_list(headList) + header2 + remove_dup_data_at_list(headList))
+        sheet2.append(header2 + titleList + header2 + titleList)
+        sheet2.cell(row=3, column=len(header2) + 1).value = '매입가 Chg.'
+        sheet2.cell(row=3, column=len(remove_dup_data_at_list(headList)) + 7).value = '판매가 Chg.'  # 6+1
+        sheet2.append(datas + buyPerList + header2 + sellPerList)
+
 
         sheet3.append(header1 + remove_dup_data_at_list(headList))
         sheet3.append(header2 + titleList)
+        sheet3.cell(row=3, column=len(header2) + 1).value = 'Spread (판매가-매입가)'
+        sheet3.append(datas + spreadList)
 
         book.save(FILENAME)
