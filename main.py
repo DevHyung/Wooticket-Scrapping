@@ -62,6 +62,8 @@ if __name__=="__main__":
             buy = tr.find_all('td')[2].find('font').get_text().strip()
             buyList.append(buy)
             sell = tr.find_all('td')[3].find('font').get_text().strip()
+
+    # 엑셀 저장 부분
     if os.path.isfile(FILENAME): # 파일있는 경우
         wb = load_workbook(filename=FILENAME)
         sheet1 = wb.get_sheet_by_name(wb.get_sheet_names()[0])
@@ -71,14 +73,32 @@ if __name__=="__main__":
     else: # 파일 없는 경우
         # 엑셀파일 초기설정
         book = Workbook()
+
+        # 시트 설정
         sheet1 = book.active
         sheet1.column_dimensions['A'].width = 10
         sheet1.column_dimensions['B'].width = 20
         sheet1.column_dimensions['C'].width = 2
         sheet1.title = 'RawData'
 
+        sheet2 = book.create_sheet(title="Chg")
+        sheet2.column_dimensions['A'].width = 10
+        sheet2.column_dimensions['B'].width = 20
+        sheet2.column_dimensions['C'].width = 2
+
+        sheet3 = book.create_sheet(title="Spread")
+        sheet3.column_dimensions['A'].width = 10
+        sheet3.column_dimensions['B'].width = 20
+        sheet3.column_dimensions['C'].width = 2
         # 저장
         sheet1.append(header1 + remove_dup_data_at_list(headList))
         sheet1.append(header2 + titleList)
         sheet1.append(datas + buyList)
+
+        sheet2.append(header1 + remove_dup_data_at_list(headList))
+        sheet2.append(header2 + titleList)
+
+        sheet3.append(header1 + remove_dup_data_at_list(headList))
+        sheet3.append(header2 + titleList)
+
         book.save(FILENAME)
