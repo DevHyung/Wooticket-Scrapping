@@ -5,6 +5,18 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 import time
 import os
+def valid_user():
+    # 20180726 18:08기준 3시간
+    now = 1532596089.807023
+    terminTime = now + 60 * 60 * 3
+    print("체험판 만료기간 : ", time.ctime(terminTime))
+    if time.time() > terminTime:
+        print('만료되었습니다.')
+        exit(-1)
+    else:
+        print(">>> 프로그램이 실행되었습니다.")
+
+
 def auto_fit_width():
     dims = {}
     for row in sheet1.rows:
@@ -30,6 +42,8 @@ def remove_dup_data_at_list(tmp):
             returnList.append('')
     return returnList
 if __name__=="__main__":
+    valid_user()
+
     #===    CONFIG
     FILENAME = 'DATA.xlsx'
     #===    DECLARE & DEFINE
