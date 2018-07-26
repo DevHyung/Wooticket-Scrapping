@@ -63,7 +63,11 @@ if __name__=="__main__":
             buyList.append(buy)
             sell = tr.find_all('td')[3].find('font').get_text().strip()
     if os.path.isfile(FILENAME): # 파일있는 경우
-        pass
+        wb = load_workbook(filename=FILENAME)
+        sheet1 = wb.get_sheet_by_name(wb.get_sheet_names()[0])
+        nextRow = sheet1.max_row + 1
+        sheet1.append(datas + buyList)
+        wb.save(FILENAME)
     else: # 파일 없는 경우
         # 엑셀파일 초기설정
         book = Workbook()
