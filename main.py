@@ -8,7 +8,7 @@ import os
 def valid_user():
     # 20180726 18:08기준 3시간
     now = 1532596089.807023
-    terminTime = now + 60 * 60 * 3
+    terminTime = now + 60 * 60 * 6
     print("체험판 만료기간 : ", time.ctime(terminTime))
     if time.time() > terminTime:
         print('만료되었습니다.')
@@ -45,7 +45,7 @@ if __name__=="__main__":
     valid_user()
 
     #===    CONFIG
-    FILENAME = 'DATA.xlsx'
+    FILENAME = os.path.dirname(os.path.realpath(__file__)) +'\\'+'DATA.xlsx'
     #===    DECLARE & DEFINE
     bs4 = get_bs_obejct_by_url('http://www.wooticket.com/popup_price.php')
     headList = []   #맨위
