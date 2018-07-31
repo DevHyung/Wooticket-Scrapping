@@ -5,9 +5,10 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 import time
 import os
+
 def valid_user():
-    # 20180726 18:08기준 3시간
-    now = 1532596089.807023
+    # 20180730 10:03기준 6시간
+    now = 1533029351.5056076
     terminTime = now + 60 * 60 * 6
     print("체험판 만료기간 : ", time.ctime(terminTime))
     if time.time() > terminTime:
@@ -45,7 +46,12 @@ if __name__=="__main__":
     valid_user()
 
     #===    CONFIG
-    FILENAME = os.path.dirname(os.path.realpath(__file__)) +'\\'+'DATA.xlsx'
+    #FILENAME = r'C:\Users\khuph\Desktop\DATA.xlsx'
+    f = open("CONFIG.txt",encoding='utf8').readlines()
+    targetDir = f[0].split(':',maxsplit=1)[1].strip()
+    targetName = f[1].split(':')[1].strip()
+    FILENAME = targetDir+'\\'+targetName
+    print(FILENAME)
     #===    DECLARE & DEFINE
     bs4 = get_bs_obejct_by_url('http://www.wooticket.com/popup_price.php')
     headList = []   #맨위
@@ -105,7 +111,6 @@ if __name__=="__main__":
     else: # 파일 없는 경우
         # 엑셀파일 초기설정
         book = Workbook()
-
         # 시트 설정
         sheet1 = book.active
         sheet1.column_dimensions['A'].width = 10
