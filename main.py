@@ -8,7 +8,7 @@ import os
 
 def valid_user():
     # 20180730 10:03기준 6시간
-    now = 1533029351.5056076
+    now = 1533091486.2744226
     terminTime = now + 60 * 60 * 6
     print("체험판 만료기간 : ", time.ctime(terminTime))
     if time.time() > terminTime:
@@ -96,15 +96,18 @@ if __name__=="__main__":
     # 엑셀 저장 부분
     if os.path.isfile(FILENAME): # 파일있는 경우
         wb = load_workbook(filename=FILENAME)
-        sheet1 = wb.get_sheet_by_name(wb.get_sheet_names()[0])
+        sheet1 = wb[wb.sheetnames[0]]
+        #sheet1 = wb.get_sheet_by_name(wb.get_sheet_names()[0])
         nextRow = sheet1.max_row + 1
         sheet1.append(datas + buyList + header2 + sellList)
 
-        sheet2 = wb.get_sheet_by_name(wb.get_sheet_names()[1])
+        sheet2 = wb[wb.sheetnames[1]]
+        #sheet2 = wb.get_sheet_by_name(wb.get_sheet_names()[1])
         nextRow = sheet2.max_row + 1
         sheet2.append(datas + buyPerList + header2 + sellPerList)
 
-        sheet3 = wb.get_sheet_by_name(wb.get_sheet_names()[2])
+        sheet3 = wb[wb.sheetnames[2]]
+        #sheet3 = wb.get_sheet_by_name(wb.get_sheet_names()[2])
         nextRow = sheet3.max_row + 1
         sheet3.append(datas + spreadList)
         wb.save(FILENAME)
