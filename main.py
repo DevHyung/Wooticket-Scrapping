@@ -43,8 +43,7 @@ def remove_dup_data_at_list(tmp):
             returnList.append('')
     return returnList
 if __name__=="__main__":
-    valid_user()
-
+    #valid_user()
     #===    CONFIG
     #FILENAME = r'C:\Users\khuph\Desktop\DATA.xlsx'
     f = open("CONFIG.txt",encoding='utf8').readlines()
